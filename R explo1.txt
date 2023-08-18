@@ -1,0 +1,133 @@
+################# Activité exploratoire n°1 #############
+
+## 1 
+#(a) don1<-read.table("conso_vehicules.csv", header=T, sep=";")
+#(b) don1<- read.csv2("conso_vehicules.csv")
+#(c) avec package readr - utile pour écrire en tidyverse et plus rapide
+#install.packages("readr") # si non installé préalablement (on livre le carton).
+# attention à votre mise à jour de R. le réactualiser si nécessaire ou prendre une version antérieure du package !
+#library("readr") #on attache le package à l'environnement de travail (on ouvre le carton)
+don1<-read_csv("conso_vehicules.csv")
+#(d) avec import package data.table - utile pour de très grosses bases de données et pour fonctionner en environnement table.
+#Attention, donc pas le meme format par défaut, ajouter uen option pour rester en data.frame.
+#install.packages("data.table") 
+library("data.table") 
+don1<-fread("conso_vehicules.csv", data.table=F) # 
+# (e) à la main..
+# etc. !
+
+## 2
+
+# (a) 
+summary(don1); don1
+# (b)
+str(don1); View(don1) #attention 'V' majuscule, ou encore avec le viewer de RStudio en cliquant sur l'icone à droite de la fenêtre de l'environnement
+#(c)
+attach(don1) #ouvrir le contenu de don1. c'est-à-dire accéder aux colonnes de don1 par leur nom (sortir les objets du carton). pour refermer avec detach(don1)
+names(don1)
+class(prix); class(modèle)
+edit(don1) # permet de modifier du contenu à l'intérieur de don1
+detach(don1)
+#(d)etc.
+
+##3
+#(a)
+names(don1)
+attach(don1)
+X11() # pour ouvrir une fenêtre graphique externe
+plot(cylindrée,prix,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+text (cylindrée,prix, labels=modèle, cex=0.6, col="red",pos=4) # pour ajouter du text sur un graphe
+plot(puissance,prix,  main="Prix en fonction de la puissance du véhicule", type="p", pch=17, xlab="puissance", ylab="prix", col="blue")
+text (puissance,prix, labels=modèle, cex=0.6, col="red",pos=4) # pour ajouter du text sur un graphe
+dev.off() # pour fermer la fenêtre graphique externe
+detach(don1)
+#(b) relation croissante ou presque, parois linéaire
+# prix vs cylindrée : 2 valeurs extrêmes (mercedes S 600 et Ferrari 456 GT ) ; quelques modèles qui ne respectent pas 
+# la croissance 
+# stricte (Maserati GT / à Hyundai Sonata et Lancia K) idem avec les modèles extrêmes.
+# Une tendance croissante linéaires pour tous sauf Maserati et les deux extrêmes.La ferrari va modifier fortement
+# une tendance centrale droite vers le haut
+#
+# prix vs puissance :  quasiment tout est en tendance croissante ( cas de Toyota Previa salon). ; On retrouve els 3 valeurs etxremes (les 2 precédentes  la maserati).
+# Une tendance croissante linéaires pour tous sauf  les trois extrêmes. 
+# Des extremes qui vont modifier une tendance centrale droite vers le haut
+# surtout pour la Ferrari.
+
+##4
+#(a) 
+Reg1<-lm(prix~cylindrée, data=don1)
+Reg1 # prix=-46063.7   +      42.9 *cylindrée 
+Reg2<-lm(prix~puissance, data=don1)
+Reg2 # prix=-28352.5     +   742.6 *puissance
+
+
+#(b) Reg1 Si l'on admet une relation de causalité entre le prix et le nombre de cylindre, on pourrait alors dire qu'à chaque fois que l'on ajoute un cylindre à un véhicule, on augmente le prix de 42,9 (monnaie)
+# En moyenne sur l'ensemble des véhicules, pour un véhicule de 0 cylindre (ce qui n'existe pas), le prix est de - 46063,7.
+#
+# Reg2. Si l'on admet une relation de causalité entre le prix et la puissance, on pourrait alors dire qu'à chaque fois que l'on ajoute 1 kW à un véhicule, on augmente le prix de 742,6 (monnaie).
+# En moyenne, pour un véhicule de 0 kW (ce qui n'existe pas), le prix est de -28352.5.
+# 
+
+##5
+#(a)
+X11()
+par(mfrow=c(2,1))
+plot(cylindrée,prix,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Reg1), col="red")
+text (cylindrée,prix, labels=modèle, cex=0.6, col="red",pos=4) # pour ajouter du text sur un graphe
+
+plot(puissance, prix, main="Prix en fonction de la puissance du véhicule", type="p", pch=17, xlab="puissance", ylab="prix", col="blue")
+abline(reg=coef(Reg2), col="red")
+text (puissance,prix, labels=modèle, cex=0.6, col="red",pos=4) # pour ajouter du text sur un graphe
+
+#(b)
+
+
+##6
+#(a) 
+Reg<-lm(prix~cylindrée+puissance, data=don1)
+Reg
+#prix=  -27532.476  +     -1.517* cylindrée   +  766.907 *  puissance  
+Regbis<-lm(prix~cylindrée+puissance+cylindrée*puissance, data=don1)     
+Regbis
+
+#(b)
+
+#(c)
+
+##7
+
+#(a)
+cov(cylindrée, puissance)
+#cov(cylindrée, puissance)= 76910.03
+cor(cylindrée, puissance)
+#cor(cylindrée, puissance)=0.9625134
+
+##8.
+#(a)
+Regcroi1<-lm(cylindrée~puissance, data=don1)
+Regcroi1
+#cylindre=540.5*   16.0  * puissance  
+Regcroi2<-lm(puissance~cylindrée, data=don1)
+Regcroi2
+#puissance=-24.16362 +   0.05792 * cylindrée 
+#(b)
+
+##9.
+
+puissance_cr<-scale(puissance)
+cylindree_cr<-scale(cylindrée)
+
+Regcroi1_cr<-lm(cylindree_cr~puissance_cr)
+Regcroi1_cr
+#(Intercept)  puissance_cr  
+# 1.994e-16     9.625e-01  
+
+Regcroi2_cr<-lm(puissance_cr~cylindree_cr)
+Regcroi2_cr
+#(Intercept)  cylindree_cr  
+#-1.919e-16     9.625e-01  
+
+Reg_cr<-lm(prix~cylindree_cr+puissance_cr)
+Reg_cr
+

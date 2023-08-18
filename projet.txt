@@ -1,0 +1,215 @@
+################# Activité exploratoire n°1 #############
+
+## Importation des fichiers 
+#don1<-read_csv("conso_vehicules.csv")
+library(readxl)
+data <- read_excel("C:/Users/User/Downloads/projet/data.xls", 
+                     +     sheet = "DEP")
+View(data)
+
+## 2
+
+# (a)  summary(don1); don1
+summary(data)
+# (b)str(don1); View(don1) 
+str(data)
+#(c)
+#attach(don1) #ouvrir le contenu de don1. c'est-à-dire accéder aux colonnes de don1 par leur nom (sortir les objets du carton). pour refermer avec detach(don1)
+#names(don1)
+#class(prix); class(modèle)
+#edit(don1) # permet de modifier du contenu à l'intérieur de don1
+#detach(don1)
+attach(data)
+names(data)
+class(Departement)
+class(Nbre_demplois_salaries)
+edit(data)
+detach(data)
+#(d)etc.
+
+##3 
+  #nbre de salaries en fct l'evolution de l'agriculture
+names(data)
+attach(data)
+X11() 
+plot(agriculture ,Nbre_demplois_salaries,  main="Nombre d'emplois salaries en fct de l'evol. de l'agriculture", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+text (agriculture,emplois_salaries,Departement, labels=modèle, cex=0.6, col="red",pos=4) 
+detach(data)
+  #nbre de salaries en fct l'evolution de l'industrie
+attach(data)
+X11() 
+plot(industrie ,Nbre_demplois_salaries,  main="Nombre d'emplois salaries en fct de l'evol. de l'industrie", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+text (industrie,emplois_salaries, labels=modèle, cex=0.6, col="red",pos=4) 
+detach(data)
+   # nbre de salaries en fct l'evolution de la construction
+attach(data)
+X11() 
+plot(construction ,Nbre_demplois_salaries,  main="Nombre d'emplois salaries en fct de l'evol. de la construction", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+text (construction,emplois_salaries, labels=modèle, cex=0.6, col="red",pos=4) 
+detach(data)
+  #nbre de salaries en fct l'evolution du tertiaire_marchand
+attach(data)
+X11() 
+plot(tertiaire_marchand ,Nbre_demplois_salaries,  main="Nombre d'emplois salaries en fct de l'evol. du tertiaire_marchand", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+text (tertiaire_marchand,emplois_salaries, labels=modèle, cex=0.6, col="red",pos=4) 
+detach(data)
+  #nbre de salaries en fct l'evolution du tertiaire_non_marchand
+attach(data)
+X11() 
+plot(tertiaire_non_marchand ,Nbre_demplois_salaries,  main="Nombre d'emplois salaries en fct de l'evol. du tertiaire_non_marchand", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+text (tertiaire_non_marchand,emplois_salaries, labels=modèle, cex=0.6, col="red",pos=4) 
+detach(data)
+  #nbre de salaries en fct l'evolution trimestriel
+attach(data)
+X11() 
+plot(Evol_trimestriel ,Nbre_demplois_salaries,  main="Nombre d'emplois salaries en fct de l'evol. trimestriel", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+text (Evol_trimestriel,emplois_salaries, labels=modèle, cex=0.6, col="red",pos=4) 
+detach(data)
+                     #####Interpretation#####
+#(b) relation croissante ou presque, parois linéaire
+# prix vs cylindrée : 2 valeurs extrêmes (mercedes S 600 et Ferrari 456 GT ) ; quelques modèles qui ne respectent pas 
+# la croissance 
+# stricte (Maserati GT / à Hyundai Sonata et Lancia K) idem avec les modèles extrêmes.
+# Une tendance croissante linéaires pour tous sauf Maserati et les deux extrêmes.La ferrari va modifier fortement
+# une tendance centrale droite vers le haut
+#
+# prix vs puissance :  quasiment tout est en tendance croissante ( cas de Toyota Previa salon). ; On retrouve els 3 valeurs etxremes (les 2 precédentes  la maserati).
+# Une tendance croissante linéaires pour tous sauf  les trois extrêmes. 
+# Des extremes qui vont modifier une tendance centrale droite vers le haut
+# surtout pour la Ferrari.
+                       ########################
+
+   #croisement entre agriculture et industrie
+X11()
+plot(data$agriculture, data$industrie, main = "Resultats 100m vs 400m", pch = 5,
+     xlab = "X400m", ylab = "X100m")
+text(data$agriculture, data$industrie,data$Departement, pos = 1, cex = 0.5, col = "blue")
+  #croisement entre industrie et construction
+X11()
+plot(data$industrie, data$construction, main = "Resultats 100m vs 400m", pch = 5,
+     xlab = "X400m", ylab = "X100m")
+text(data$industrie,data$construction,data$Departement, pos = 1, cex = 0.5, col = "blue")
+  #croisement entre industrie et tertiaire_marchand
+X11()
+plot(data$industrie, data$tertiaire_marchand, main = "Resultats 100m vs 400m", pch = 5,
+     xlab = "X400m", ylab = "X100m")
+text(data$industrie,data$tertiaire_marchand,data$Departement, pos = 1, cex = 0.5, col = "blue")
+  #croisement entre industrie et tertiaire_non_marchand
+X11()
+plot(data$industrie, data$tertiaire_non_marchand, main = "Resultats 100m vs 400m", pch = 5,
+     xlab = "X400m", ylab = "X100m")
+text(data$industrie,data$tertiaire_non_marchand,data$Departement, pos = 1, cex = 0.5, col = "blue")
+
+##4
+                          ##############
+#(a) 
+Reg1<-lm(prix~cylindrée, data=don1)
+Reg1 # prix=-46063.7   +      42.9 *cylindrée 
+Reg2<-lm(prix~puissance, data=don1)
+Reg2 # prix=-28352.5     +   742.6 *puissance
+#(b) Reg1 Si l'on admet une relation de causalité entre le prix et le nombre de cylindre, on pourrait alors dire qu'à chaque fois que l'on ajoute un cylindre à un véhicule, on augmente le prix de 42,9 (monnaie)
+# En moyenne sur l'ensemble des véhicules, pour un véhicule de 0 cylindre (ce qui n'existe pas), le prix est de - 46063,7.
+#
+# Reg2. Si l'on admet une relation de causalité entre le prix et la puissance, on pourrait alors dire qu'à chaque fois que l'on ajoute 1 kW à un véhicule, on augmente le prix de 742,6 (monnaie).
+# En moyenne, pour un véhicule de 0 kW (ce qui n'existe pas), le prix est de -28352.5.
+                           ##############
+Reg1<-lm(Evol_trimestriel~agriculture, data=data)
+Reg1 # Evol_trimestriel=0.30821   +      0.05012 *agriculture
+Reg2<-lm(Evol_trimestriel~industrie, data=data)
+Reg2 # Evol_trimestriel=0.2445   +      0.1327 *industrie
+Reg3<-lm(Evol_trimestriel~construction, data=data)
+Reg3 # Evol_trimestriel=0.27232   +      0.09213 *construction
+Reg4<-lm(Evol_trimestriel~tertiaire_marchand, data=data)
+Reg4 # Evol_trimestriel=-0.00802   +      0.50947 *tertiaire_marchand
+Reg5<-lm(Evol_trimestriel~tertiaire_non_marchand, data=data)
+Reg5 # Evol_trimestriel=0.2206   +      0.3980 *tertiaire_non_marchand
+                        #####interpretation#####
+
+##5
+#(a)
+X11()
+par(mfrow=c(2,1))
+plot(cylindrée,prix,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Reg1), col="red")
+text (cylindrée,prix, labels=modèle, cex=0.6, col="red",pos=4) # pour ajouter du text sur un graphe
+
+plot(puissance, prix, main="Prix en fonction de la puissance du véhicule", type="p", pch=17, xlab="puissance", ylab="prix", col="blue")
+abline(reg=coef(Reg2), col="red")
+text (puissance,prix, labels=modèle, cex=0.6, col="red",pos=4) # pour ajouter du text sur un graphe
+                         ##################
+X11()
+#par(mfrow=c(1,5))
+plot(data$agriculture,data$Evol_trimestriel,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Reg1), col="red")
+text (data$agriculture,data$Evol_trimestriel, labels=data$Departement, cex=0.6, col="red",pos=4) 
+
+X11()
+plot(data$industrie,data$Evol_trimestriel,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Reg2), col="red")
+text (data$industrie,data$Evol_trimestriel, labels=data$Departement, cex=0.6, col="red",pos=4)
+
+X11()
+plot(data$construction,data$Evol_trimestriel,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Reg3), col="red")
+text (data$construction,data$Evol_trimestriel, labels=data$Departement, cex=0.6, col="red",pos=4) 
+
+X11()
+plot(data$tertiaire_marchand,data$Evol_trimestriel,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Reg4), col="red")
+text (data$tertiaire_marchand,data$Evol_trimestriel, labels=data$Departement, cex=0.6, col="red",pos=4) 
+
+X11()
+plot(data$tertiaire_non_marchand,data$Evol_trimestriel,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Reg5), col="red")
+text (data$tertiaire_non_marchand,data$Evol_trimestriel, labels=data$Departement, cex=0.6, col="red",pos=4) 
+
+#(b)
+
+
+##6
+#(a) 
+Reg<-lm(prix~cylindrée+puissance, data=don1)
+Reg
+#prix=  -27532.476  +     -1.517* cylindrée   +  766.907 *  puissance  
+Regbis<-lm(prix~cylindrée+puissance+cylindrée*puissance, data=don1)     
+Regbis
+                     ###############
+Reg<-lm(Evol_trimestriel~agriculture+industrie+construction+tertiaire_marchand+tertiaire_non_marchand, data=data)
+Reg # Evol_trimestriel=-0.01135+ 0.01820*agriculture  + 0.13271*industrie  + 0.03145*construction  + 0.45408*tertiaire_marchand  + 0.34111*tertiaire_non_marchand
+
+Regg<- lm(Evol_trimestriel~Nbre_demplois_salaries, data=data)
+Regg #Evol_trimestriel=0.1092493 + 0.0005924*Nbre_demplois_salaries
+X11()
+plot(data$Nbre_demplois_salaries,data$Evol_trimestriel,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Regg), col="red")
+text (data$Nbre_demplois_salaries,data$Evol_trimestriel, labels=data$Departement, cex=0.6, col="red",pos=4) 
+
+Regi<- lm(Nbre_demplois_salaries~Evol_trimestriel, data=data)
+Regi #Nbre_demplois_salaries=222 + 137*Evol_trimestriel
+X11()
+plot(data$Evol_trimestriel,data$Nbre_demplois_salaries,  main="Prix en fonction de la cylindrée du véhicule", type="p", pch=17, xlab="cylindrée", ylab="prix", col="blue")
+abline(reg=coef(Regi), col="red")
+text (data$Evol_trimestriel,data$Nbre_demplois_salaries, labels=data$Departement, cex=0.6, col="red",pos=4) 
+
+#levolution du Secteur primaire et secondaire
+X11()
+plot(data$agriculture, data$industrie, main = "Resultats 100m vs 400m", pch = 5,
+     xlab = "X400m", ylab = "X100m")
+abline(reg=coef(lm(agriculture~industrie,data=data)), col="red")
+text(data$agriculture, data$industrie,data$Departement, pos = 1, cex = 0.5, col = "blue")
+
+#levolution du Secteur primaire et BTP
+X11()
+plot(data$agriculture, data$construction, main = "Resultats 100m vs 400m", pch = 5,
+     xlab = "X400m", ylab = "X100m")
+abline(reg=coef(lm(agriculture~construction,data=data)), col="red")
+text(data$agriculture, data$construction,data$Departement, pos = 1, cex = 0.5, col = "blue")
+
+#levolution du Secteur primaire et Tertiaire
+X11()
+plot(data$agriculture, data$tertiaire_marchand+data$tertiaire_non_marchand, main = "Resultats 100m vs 400m", pch = 5,
+     xlab = "Secteur primaire", ylab = "Secteur Tertiaire")
+regpt=lm(agriculture~tertiaire_marchand+tertiaire_non_marchand,data=data);
+abline(reg=coef(regpt), col="red")
+text(data$agriculture, data$tertiaire_marchand+data$tertiaire_non_marchand,data$Departement, pos = 1, cex = 0.5, col = "blue")
+
